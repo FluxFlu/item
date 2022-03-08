@@ -2,7 +2,7 @@
 module.exports = function compile(file) {
     let nontext = (file.match(/[\s\S]*?(?=^===$)/m) || [""]).join('');
 
-    let setup = (nontext.match(/(?<!^#.*)[^#\s].+(?=\n*?)/gm) || [""]).join('\n\n');
+    let setup = (nontext.match(/(?<!^#.*)[^#\s].*(?=\n*?)/gm) || [""]).join('\n\n');
 
     let text = '\n\nwrite(`' + (file.match(/(?<=^===$\n)[\s\S]*/m) || [""]).join('') + '`)';
     if (!nontext) return text;
