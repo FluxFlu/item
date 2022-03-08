@@ -2,8 +2,7 @@
 const fs = require('fs/promises');
 const compile = require('./compiler.js');
 const importHandler = require('./importHandler.js');
-const args = process.argv.slice(2);
-
+let args = process.argv.slice(2);
 if (args[0] == '-h' || args[0] == '--help') {
     fs.readFile(`${__dirname}/helpMessage.txt`, "utf-8").then((help) => {
         console.log(help);
@@ -11,7 +10,21 @@ if (args[0] == '-h' || args[0] == '--help') {
     return;
 }
 
-if (args[0][0] == '-') return;
+if (!args[0] || !args[0][0] || args[0][0] == '-') return;
+
+
+const flags = {
+    "display": false,
+}
+
+while (args.filter(e => e[0] == '-').length > 0) {
+    for(let i = 0; i < args.length; i++)
+        if (args[i][0] == '-') {
+            flags[args[i].slice(2)] = true;
+            args.splice(i, 1);
+            break;
+        }
+}
 
 if (!(args[1] && args[1].match(/\S/)))
     args[1] = args[0].replace(".item", ".txt");
@@ -21,7 +34,10 @@ fs.readFile(args[0], "utf-8").then((file) => {
     function write(n) { final += n; }
     importHandler(file).then((imports) => {
         console.log(`Compiling from ${args[0]} to ${args[1]}`);
-        eval(imports + compile(file));
+        let compiled = imports + compile(file);
+        if (flags.display)
+            console.log(compiled);
+        eval(compiled);
         fs.writeFile(args[1], final);
         console.log("Compiled.");
     });
