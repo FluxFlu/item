@@ -115,7 +115,7 @@ eggs, bacon, breakfast,
 
 ### Inclusion
 
-Other scripts can be included during compilation. This is done using `#include`.
+Other scripts can be included to be run during compilation. This is done using `#include`.
 
 ```js
 //math.js
